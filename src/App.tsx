@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Layout from "./Pages/Layout";
+import ErrorPage from "./Pages/ErrorPage";
+import apiRoot from "./Service/client";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "/", element: <></> },
+      { path: "", element: <></> },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  console.log(apiRoot);
+  return <RouterProvider router={router} />;
 }
 
 export default App;
+
+// Alternate Method for create Routes
+// function Appp(){
+// return (
+//   <>
+//     <div className="App">
+//       <Router>
+//         <Routes>
+//           <Route path="/" element={<Home />} />
+//           <Route path="/create" element={<Add />} />
+//           <Route path="/edit/:id" element={<Edit />} />
+//         </Routes>
+//       </Router>
+//     </div>
+//   </>);
+// }
