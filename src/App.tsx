@@ -2,6 +2,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./Pages/Layout";
 import ErrorPage from "./Pages/ErrorPage";
 import apiRoot from "./Service/client";
+import Home from "./Pages/Home";
+import Discount from "./Pages/Discount";
+import CartDiscountList from "./Pages/CartDiscountList";
 
 const router = createBrowserRouter([
   {
@@ -9,8 +12,9 @@ const router = createBrowserRouter([
     element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "/", element: <></> },
-      { path: "", element: <></> },
+      { path: "/", element: <Home /> },
+      { path: "/discount", element: <Discount /> },
+      { path: "/discount/cartDiscount", element: <CartDiscountList /> },
     ],
   },
 ]);

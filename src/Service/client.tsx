@@ -1,12 +1,16 @@
 import { createApiBuilderFromCtpClient } from "@commercetools/platform-sdk";
-import { ClientBuilder } from "@commercetools/sdk-client-v2";
+import {
+  type AuthMiddlewareOptions,
+  ClientBuilder,
+  type HttpMiddlewareOptions,
+} from "@commercetools/sdk-client-v2";
 import fetch from "node-fetch";
 
 const projectKey = process.env.REACT_APP_DEV_PROJECT_KEY;
 const scopes = [process.env.REACT_APP_DEV_SCOPES];
 
 // Configure authMiddlewareOptions
-const authMiddlewareOptions = {
+const authMiddlewareOptions: AuthMiddlewareOptions = {
   host: process.env.REACT_APP_DEV_AUTH_URL,
   projectKey: projectKey,
   credentials: {
@@ -18,7 +22,7 @@ const authMiddlewareOptions = {
 };
 
 // Configure httpMiddlewareOptions
-const httpMiddlewareOptions = {
+const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: process.env.REACT_APP_DEV_API_URL,
   fetch,
 };
