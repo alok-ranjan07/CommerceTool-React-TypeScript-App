@@ -41,12 +41,12 @@ const CartDiscountList = () => {
       setError({
         message: `Cart Discount with Promo name : "${data.body.name.en}" deleted successfully!!!`,
       });
+      if (state) {
+        setState(false);
+      } else {
+        setState(true);
+      }
     });
-    if (state) {
-      setState(false);
-    } else {
-      setState(true);
-    }
   }
 
   const searchDataHandler = (event) => {

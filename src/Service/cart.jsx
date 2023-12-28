@@ -15,3 +15,30 @@ export const deleteCartDiscountById = ({ id, version }) => {
     .delete({ queryArgs: { version: version } })
     .execute();
 };
+
+export const addCartDiscount = (event) => {
+  return apiRoot
+    .cartDiscounts()
+    .post({
+      body: {
+        name: {
+          en: event.promoName,
+        },
+        key: event.promoKey,
+        value: event.value,
+        cartPredicate: "1=1",
+        target: event.target,
+        sortOrder: event.sortOrder,
+        stores: [
+          {
+            key: event.storeKey,
+          },
+        ],
+        isActive: event.active,
+        validFrom: event.validFrom,
+        validUntil: event.validUntil,
+        requiresDiscountCode: event.discountCodeRequirement,
+      },
+    })
+    .execute();
+};

@@ -17,3 +17,7 @@
 .leftArrow:hover {
   translate: -5px;
 }
+
+.formLabel {
+  float: left;
+}

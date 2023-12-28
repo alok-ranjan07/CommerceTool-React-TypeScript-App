@@ -27,3 +27,8 @@ main {
 body > iframe {
   display: none;
 }
+
+error {
+  float: left;
+  color: red;
+}
