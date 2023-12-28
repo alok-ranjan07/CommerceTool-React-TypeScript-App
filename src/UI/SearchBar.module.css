@@ -1,0 +1,7 @@
+.searchButton {
+  transition: scale 0.5s;
+}
+
+.searchButton:hover {
+  scale: 1.4;
+}

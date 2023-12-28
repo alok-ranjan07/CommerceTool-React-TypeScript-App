@@ -1,8 +1,8 @@
 import React from "react";
-import Button from "../UI/Button";
 import classes from "../CSS/MainNavigation.module.css";
 import Card from "../UI/Card";
 import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 const Discount = () => {
   const navigate = useNavigate();
@@ -16,18 +16,10 @@ const Discount = () => {
         <div className={classes.header}>
           <ul className={classes.list}>
             <li>
-              <Button onClick={viewCartDiscountHandler}>
-                View Cart-Discounts
-              </Button>
+              <Button onClick={viewCartDiscountHandler}>Cart-Discounts</Button>
             </li>
             <li>
-              <Button>View Discount-codes</Button>
-            </li>
-            <li>
-              <Button>Add Cart-Discount</Button>
-            </li>
-            <li>
-              <Button>Add Discount-code</Button>
+              <Button>Discount-codes</Button>
             </li>
           </ul>
         </div>

@@ -1,8 +1,8 @@
 import React from "react";
 import Card from "../UI/Card";
-import Button from "../UI/Button";
 import { useNavigate } from "react-router-dom";
 import classes from "../CSS/MainNavigation.module.css";
+import { Button } from "react-bootstrap";
 
 const Home = () => {
   const navigate = useNavigate();

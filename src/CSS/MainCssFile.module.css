@@ -1,0 +1,19 @@
+.icon,
+.plus,
+.sync,
+.leftArrow {
+  transition: scale 0.5s, rotate 1.5s ease-in-out, translate 1s ease;
+}
+/* Or transition: all duration behaviour */
+
+.icon:hover {
+  scale: 1.4;
+}
+
+.sync:hover {
+  rotate: 540deg;
+}
+
+.leftArrow:hover {
+  translate: -5px;
+}

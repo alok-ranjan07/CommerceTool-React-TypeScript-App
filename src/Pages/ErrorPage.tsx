@@ -1,7 +1,7 @@
 import React from "react";
 import MainNavigation from "../Components/MainNavigation";
-import Card from "../UI/Card";
 import { Link } from "react-router-dom";
+import { Card } from "react-bootstrap";
 
 const ErrorPage = () => {
   return (

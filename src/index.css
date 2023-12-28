@@ -22,3 +22,8 @@ main {
   margin: 2rem auto;
   text-align: center;
 }
+
+/* to close the uncaught runtime error popup window */
+body > iframe {
+  display: none;
+}

@@ -1,4 +1,5 @@
 import { createApiBuilderFromCtpClient } from "@commercetools/platform-sdk";
+import { ByProjectKeyRequestBuilder } from "@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder";
 import {
   type AuthMiddlewareOptions,
   ClientBuilder,
@@ -6,8 +7,8 @@ import {
 } from "@commercetools/sdk-client-v2";
 import fetch from "node-fetch";
 
-const projectKey = process.env.REACT_APP_DEV_PROJECT_KEY;
-const scopes = [process.env.REACT_APP_DEV_SCOPES];
+const projectKey: string = process.env.REACT_APP_DEV_PROJECT_KEY;
+const scopes: string[] = [process.env.REACT_APP_DEV_SCOPES];
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
@@ -35,7 +36,9 @@ const ctpClient = new ClientBuilder()
   .withLoggerMiddleware() // Include middleware for logging
   .build();
 
-const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+const apiRoot: ByProjectKeyRequestBuilder = createApiBuilderFromCtpClient(
+  ctpClient
+).withProjectKey({
   projectKey: projectKey,
 });
 

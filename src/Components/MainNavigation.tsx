@@ -34,7 +34,7 @@ const MainNavigation = () => {
                 isActive ? classes.active : undefined
               }
             >
-              Products
+              Product
             </NavLink>
           </li>
           <li>

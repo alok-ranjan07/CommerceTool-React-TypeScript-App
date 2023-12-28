@@ -1,10 +1,10 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./Pages/Layout";
 import ErrorPage from "./Pages/ErrorPage";
-import apiRoot from "./Service/client";
 import Home from "./Pages/Home";
 import Discount from "./Pages/Discount";
 import CartDiscountList from "./Pages/CartDiscountList";
+import CartDiscountAdd from "./Pages/CartDiscountAdd";
 
 const router = createBrowserRouter([
   {
@@ -15,12 +15,12 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/discount", element: <Discount /> },
       { path: "/discount/cartDiscount", element: <CartDiscountList /> },
+      { path: "/discount/cartDiscount/add", element: <CartDiscountAdd /> },
     ],
   },
 ]);
 
 function App() {
-  console.log(apiRoot);
   return <RouterProvider router={router} />;
 }
 
