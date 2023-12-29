@@ -21,6 +21,9 @@ const Home = () => {
   const discountHandler = () => {
     navigate("/discount");
   };
+  const storeListHandler = () => {
+    navigate("/store");
+  };
   return (
     <React.Fragment>
       <Card>
@@ -42,6 +45,9 @@ const Home = () => {
             </li>
             <li>
               <Button onClick={discountHandler}>Discount</Button>
+            </li>
+            <li>
+              <Button onClick={storeListHandler}>Store</Button>
             </li>
           </ul>
         </div>
