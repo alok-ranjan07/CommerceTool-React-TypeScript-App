@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const CartDiscountAdd = () => {
   const UseRegexPattern = ({ string }) => {
-    let regex = /^[-a-zA-Z0-9 ]{2,20}$/;
+    let regex = /^[-a-zA-Z0-9 ]{2,256}$/;
     return regex.test(string);
   };
 
@@ -282,6 +282,7 @@ const CartDiscountAdd = () => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label className={`${styles.formLabel}`}>
+                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
                   Valid from
                 </Form.Label>
                 <Form.Control type="date" ref={validFromHandler} required />
@@ -289,6 +290,7 @@ const CartDiscountAdd = () => {
 
               <Form.Group as={Col}>
                 <Form.Label className={`${styles.formLabel}`}>
+                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
                   Valid until
                 </Form.Label>
                 <Form.Control type="date" ref={validUntilHandler} required />
@@ -301,7 +303,7 @@ const CartDiscountAdd = () => {
                   Apply to
                 </Form.Label>
                 <Form.Select defaultValue="totalPrice" ref={targetHandler}>
-                  <option>Choose...</option>
+                  <option value={"totalPrice"}>Choose...</option>
                   <option value={"totalPrice"}>Total Price</option>
                   <option value={"shipping"}>Shipping</option>
                   <option value={"lineItems"}>Item</option>

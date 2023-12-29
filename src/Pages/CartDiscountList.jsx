@@ -10,6 +10,7 @@ import SearchBar from "../UI/SearchBar";
 import { MDBIcon } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 import styles from "../CSS/MainCssFile.module.css";
+import ErrorModal from "../UI/ErrorModal";
 
 const CartDiscountList = () => {
   const navigate = useNavigate();
@@ -17,9 +18,17 @@ const CartDiscountList = () => {
   const [discountList, setDiscountList] = useState([]);
   const [error, setError] = useState(null);
   const [state, setState] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(null);
+
+  useEffect(() => {
+    getCartDiscountList().then((data) => {
+      setDiscountList(data.body.results);
+    });
+  }, [state]);
 
   const errorHandler = () => {
     setError(null);
+    setDeleteModal(null);
   };
 
   const backHandler = () => {
@@ -29,6 +38,7 @@ const CartDiscountList = () => {
   const addDiscountHandler = () => {
     navigate("/discount/cartDiscount/add");
   };
+
   const viewListHandler = () => {
     getCartDiscountList().then((data) => {
       setDiscountList(data.body.results);
@@ -36,7 +46,7 @@ const CartDiscountList = () => {
     setError(null);
   };
 
-  function deleteDiscountHandler({ id, version }) {
+  const deleteDiscountHandler = ({ id, version }) => {
     deleteCartDiscountById({ id, version }).then((data) => {
       setError({
         message: `Cart Discount with Promo name : "${data.body.name.en}" deleted successfully!!!`,
@@ -47,7 +57,7 @@ const CartDiscountList = () => {
         setState(true);
       }
     });
-  }
+  };
 
   const searchDataHandler = (event) => {
     getCartDiscountByKey(event)
@@ -61,11 +71,6 @@ const CartDiscountList = () => {
         })
       );
   };
-  useEffect(() => {
-    getCartDiscountList().then((data) => {
-      setDiscountList(data.body.results);
-    });
-  }, [state]);
 
   return (
     <React.Fragment>
@@ -90,6 +95,20 @@ const CartDiscountList = () => {
       </main>
 
       {error && <main>{error.message}</main>}
+      {deleteModal && (
+        <ErrorModal
+          title={deleteModal.title}
+          message={deleteModal.message}
+          onCancle={errorHandler}
+          onConfirm={() => {
+            deleteDiscountHandler({
+              id: deleteModal.data.id,
+              version: deleteModal.data.version,
+            });
+            errorHandler();
+          }}
+        />
+      )}
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
@@ -125,9 +144,10 @@ const CartDiscountList = () => {
                   <Button
                     variant="danger"
                     onClick={() => {
-                      deleteDiscountHandler({
-                        id: list.id,
-                        version: list.version,
+                      setDeleteModal({
+                        title: "Warning!",
+                        message: "Are you sure, you want to delete this Promo?",
+                        data: { id: list.id, version: list.version },
                       });
                     }}
                   >
