@@ -3,14 +3,14 @@ import {
   getCartDiscountByKey,
   getCartDiscountList,
   deleteCartDiscountById,
-} from "../Service/cart";
+} from "../../Service/cart";
 import Table from "react-bootstrap/esm/Table";
 import { Button } from "react-bootstrap";
-import SearchBar from "../UI/SearchBar";
+import SearchBar from "../../UI/SearchBar";
 import { MDBIcon } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
-import styles from "../CSS/MainCssFile.module.css";
-import ErrorModal from "../UI/ErrorModal";
+import styles from "../../CSS/MainCssFile.module.css";
+import ErrorModal from "../../UI/ErrorModal";
 
 const CartDiscountList = () => {
   const navigate = useNavigate();
@@ -29,14 +29,6 @@ const CartDiscountList = () => {
   const errorHandler = () => {
     setError(null);
     setDeleteModal(null);
-  };
-
-  const backHandler = () => {
-    navigate("/discount");
-  };
-
-  const addDiscountHandler = () => {
-    navigate("/discount/cartDiscount/add");
   };
 
   const viewListHandler = () => {
@@ -74,7 +66,7 @@ const CartDiscountList = () => {
 
   return (
     <React.Fragment>
-      <main style={{ display: "flex", justifyContent: "center", width: "50%" }}>
+      <main style={{ display: "flex", justifyContent: "center", width: "60%" }}>
         <SearchBar
           label={"Enter Promo Key"}
           onSave={searchDataHandler}
@@ -83,13 +75,23 @@ const CartDiscountList = () => {
         <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
           <MDBIcon icon="sync" className={`${styles.icon} ${styles.sync}`} />
         </Button>
-        <Button onClick={backHandler} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={() => {
+            navigate("/discount");
+          }}
+          style={{ marginLeft: "10px" }}
+        >
           <MDBIcon
             icon="angle-double-left"
             className={`${styles.icon} ${styles.leftArrow}`}
           />
         </Button>
-        <Button onClick={addDiscountHandler} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={() => {
+            navigate("/discount/cartDiscount/add");
+          }}
+          style={{ marginLeft: "10px" }}
+        >
           <MDBIcon icon="plus" className={`${styles.icon} ${styles.plus}`} />
         </Button>
       </main>
@@ -138,7 +140,13 @@ const CartDiscountList = () => {
                 <td>{String(list.validFrom).substring(0, 10)}</td>
                 <td>{String(list.validUntil).substring(0, 10)}</td>
                 <td>
-                  <Button style={{ marginRight: "20px" }} variant="success">
+                  <Button
+                    style={{ marginRight: "20px" }}
+                    variant="success"
+                    onClick={() => {
+                      navigate(`/discount/cartDiscount/add/${list.id}`);
+                    }}
+                  >
                     Edit
                   </Button>
                   <Button
@@ -146,7 +154,7 @@ const CartDiscountList = () => {
                     onClick={() => {
                       setDeleteModal({
                         title: "Warning!",
-                        message: "Are you sure, you want to delete this Promo?",
+                        message: `Are you sure, you want to delete Promo : ${list.name.en} ?`,
                         data: { id: list.id, version: list.version },
                       });
                     }}

@@ -1,18 +1,24 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import styles from "../CSS/MainCssFile.module.css";
-import { addCartDiscount } from "../Service/cart";
-import { getStoreDetails } from "../Service/store";
+import styles from "../../CSS/MainCssFile.module.css";
+import { addCartDiscount, getCartDiscountByID } from "../../Service/cart";
+import { getStoreDetails } from "../../Service/store";
 import { MDBIcon } from "mdb-react-ui-kit";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CartDiscountAdd = () => {
   const UseRegexPattern = ({ string }) => {
     let regex = /^[-a-zA-Z0-9 ]{2,256}$/;
     return regex.test(string);
   };
-
+  const { cartDiscountId = null } = useParams();
   const navigate = useNavigate();
+  const currencyHandler = useRef();
+  const discountAmountHandler = useRef();
+  const validFromHandler = useRef();
+  const validUntilHandler = useRef();
+  const targetHandler = useRef();
+  const storeKeyHandler = useRef();
   const [formValid, setFormValid] = useState(false);
   const [discountType, setDiscountType] = useState("fixed");
   const [currencyBtnDisabled, setCurrencyBtnDisabled] = useState(false);
@@ -35,12 +41,41 @@ const CartDiscountAdd = () => {
     discountCodeRequirement: false,
     active: false,
   });
-  const currencyHandler = useRef();
-  const discountAmountHandler = useRef();
-  const validFromHandler = useRef();
-  const validUntilHandler = useRef();
-  const targetHandler = useRef();
-  const storeKeyHandler = useRef();
+  const [promoEdit, setPromoEdit] = useState({
+    promoName: null,
+    promoKey: null,
+    discountType: null,
+    validFrom: null,
+    validUntil: null,
+    target: null,
+    sortOrder: null,
+    storeKey: null,
+    discountCodeRequirement: false,
+    active: false,
+  });
+
+  useEffect(() => {
+    if (cartDiscountId) {
+      getCartDiscountByID({ id: cartDiscountId }).then((data) => {
+        setPromoEdit((prevState) => {
+          console.log(data.body);
+          return {
+            ...prevState,
+            promoName: data.body.name.en,
+            promoKey: data.body.key,
+            discountType: data.body.value.type,
+            validFrom: String(data.body.validFrom).substring(0, 10),
+            validUntil: String(data.body.validUntil).substring(0, 10),
+            target: data.body.target.type,
+            sortOrder: parseFloat(data.body.sortOrder),
+            storeKey: data.body.stores[0].key,
+            discountCodeRequirement: data.body.requiresDiscountCode,
+            active: data.body.isActive,
+          };
+        });
+      });
+    }
+  }, [cartDiscountId]);
 
   useEffect(() => {
     getStoreDetails().then((data) => {
@@ -205,6 +240,7 @@ const CartDiscountAdd = () => {
                 <Form.Control
                   type="text"
                   placeholder="Enter Promo name"
+                  defaultValue={promoEdit.promoName}
                   onChange={(event) => {
                     setPromo((prevState) => {
                       return { ...prevState, promoName: event.target.value };
@@ -222,6 +258,7 @@ const CartDiscountAdd = () => {
                 </Form.Label>
                 <Form.Control
                   type="text"
+                  defaultValue={promoEdit.promoKey}
                   placeholder="Enter Promo key"
                   onChange={(event) => {
                     setPromo((prevState) => {
@@ -240,10 +277,10 @@ const CartDiscountAdd = () => {
                   Discount type
                 </Form.Label>
                 <Form.Select
-                  defaultValue="fixed"
+                  defaultValue={promoEdit.discountType}
                   onChange={discountTypeHandler}
                 >
-                  <option value={"fixed"}>Choose...</option>
+                  <option selected>Choose...</option>
                   <option value={"relative"}>Percentage Off</option>
                   <option value={"absolute"}>Amount Off</option>
                   <option value={"fixed"}>Fixed Price</option>
@@ -259,7 +296,7 @@ const CartDiscountAdd = () => {
                   ref={currencyHandler}
                   disabled={currencyBtnDisabled}
                 >
-                  <option>Choose...</option>
+                  <option selected>Choose...</option>
                   <option value={"EUR"}>EUR</option>
                   <option value={"USD"}>USD</option>
                 </Form.Select>
@@ -285,7 +322,12 @@ const CartDiscountAdd = () => {
                   <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
                   Valid from
                 </Form.Label>
-                <Form.Control type="date" ref={validFromHandler} required />
+                <Form.Control
+                  type="date"
+                  ref={validFromHandler}
+                  defaultValue={promoEdit.validFrom}
+                  required
+                />
               </Form.Group>
 
               <Form.Group as={Col}>
@@ -293,7 +335,12 @@ const CartDiscountAdd = () => {
                   <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
                   Valid until
                 </Form.Label>
-                <Form.Control type="date" ref={validUntilHandler} required />
+                <Form.Control
+                  type="date"
+                  ref={validUntilHandler}
+                  defaultValue={promoEdit.validUntil}
+                  required
+                />
               </Form.Group>
             </Row>
 
@@ -302,8 +349,11 @@ const CartDiscountAdd = () => {
                 <Form.Label className={`${styles.formLabel}`}>
                   Apply to
                 </Form.Label>
-                <Form.Select defaultValue="totalPrice" ref={targetHandler}>
-                  <option value={"totalPrice"}>Choose...</option>
+                <Form.Select
+                  defaultValue={promoEdit.target}
+                  ref={targetHandler}
+                >
+                  <option selected>Choose..</option>
                   <option value={"totalPrice"}>Total Price</option>
                   <option value={"shipping"}>Shipping</option>
                   <option value={"lineItems"}>Item</option>
@@ -322,6 +372,7 @@ const CartDiscountAdd = () => {
                   min="0"
                   max="1"
                   placeholder="0.1"
+                  defaultValue={promoEdit.sortOrder}
                   onChange={(event) => {
                     setPromo((prevState) => {
                       return { ...prevState, sortOrder: event.target.value };
@@ -334,8 +385,11 @@ const CartDiscountAdd = () => {
 
               <Form.Group as={Col}>
                 <Form.Label className={`${styles.formLabel}`}>Store</Form.Label>
-                <Form.Select defaultValue="default" ref={storeKeyHandler}>
-                  <option value="default">Choose...</option>
+                <Form.Select
+                  defaultValue={promoEdit.storeKey}
+                  ref={storeKeyHandler}
+                >
+                  <option selected>Choose..</option>
                   {storeDetails.map((store) => (
                     <option value={store.key} key={store.id}>
                       {store.key}
@@ -353,6 +407,7 @@ const CartDiscountAdd = () => {
                 <Form.Check
                   type="switch"
                   label="Requied"
+                  defaultChecked={promoEdit.discountCodeRequirement}
                   className={`${styles.formLabel}`}
                   onClick={(event) => {
                     setPromo((prevState) => {
@@ -372,10 +427,14 @@ const CartDiscountAdd = () => {
                 <Form.Check
                   type="switch"
                   label="Yes"
+                  defaultChecked={promoEdit.active}
                   className={`${styles.formLabel}`}
                   onClick={(event) => {
                     setPromo((prevState) => {
-                      return { ...prevState, active: event.target.checked };
+                      return {
+                        ...prevState,
+                        active: event.target.checked,
+                      };
                     });
                   }}
                 />
@@ -414,14 +473,3 @@ const CartDiscountAdd = () => {
   );
 };
 export default CartDiscountAdd;
-
-/* <BootstrapSwitchButton
-checked={false}
-label="Required"
-onstyle="primary"
-offstyle="secondary"
-size="xs"
-onChange={(checked) => {
-  this.setState({ isUserAdmin: checked });
-}}
-/> */

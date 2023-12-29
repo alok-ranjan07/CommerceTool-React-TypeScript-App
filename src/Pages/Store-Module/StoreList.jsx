@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  getStoreDetails,getStoreByKey
-} from "../../Service/store";
+import { getStoreDetails, getStoreByKey } from "../../Service/store";
 import Table from "react-bootstrap/esm/Table";
 import { Button } from "react-bootstrap";
 import SearchBar from "../../UI/SearchBar";
@@ -11,36 +9,27 @@ import styles from "../../CSS/MainCssFile.module.css";
 
 const StoreList = () => {
   const navigate = useNavigate();
-
   const [storeList, setStoreList] = useState([]);
   const [error, setError] = useState(null);
-  const [state, setState] = useState(false);
+
+  useEffect(() => {
+    getStoreDetails().then((data) => {
+      setStoreList(data.body.results);
+    });
+  }, []);
 
   const errorHandler = () => {
     setError(null);
   };
 
-  const backHandler = () => {
-    navigate("/store");
-  };
-
-  const getStoreCustmerHandler = (props) => {
-    navigate(`/store/customer/${props.key}`);
-  };
-
-  const getStoreProductHandler = (props) => {
-    navigate(`/store/product/${props.key}`);
-  };
-const viewListHandler = () => {
+  const viewListHandler = () => {
     getStoreDetails().then((data) => {
-        setStoreList(data.body.results);
+      setStoreList(data.body.results);
     });
     setError(null);
   };
 
-
-
-  const searchDataHandler =  (event) => {
+  const searchDataHandler = (event) => {
     getStoreByKey(event)
       .then((data) => {
         setStoreList([data.body]);
@@ -52,15 +41,10 @@ const viewListHandler = () => {
         })
       );
   };
-  useEffect(() => {
-    getStoreDetails().then((data) => {
-      setStoreList(data.body.results);
-    });
-  }, [state]);
 
   return (
     <React.Fragment>
-      <main style={{ display: "flex", justifyContent: "center", width: "50%" }}>
+      <main style={{ display: "flex", justifyContent: "center", width: "70%" }}>
         <SearchBar
           label={"Enter store Key"}
           onSave={searchDataHandler}
@@ -69,13 +53,17 @@ const viewListHandler = () => {
         <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
           <MDBIcon icon="sync" className={`${styles.icon} ${styles.sync}`} />
         </Button>
-        <Button onClick={backHandler} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={() => {
+            navigate("/store");
+          }}
+          style={{ marginLeft: "10px" }}
+        >
           <MDBIcon
             icon="angle-double-left"
             className={`${styles.icon} ${styles.leftArrow}`}
           />
         </Button>
-       
       </main>
 
       {error && <main>{error.message}</main>}
@@ -96,18 +84,26 @@ const viewListHandler = () => {
                 <td>{list.key}</td>
 
                 <td>
-                  <Button style={{ marginRight: "20px" }} variant="success" 
-                  onClick={(event)=>getStoreCustmerHandler({key:list.key})}>
+                  <Button
+                    style={{ marginRight: "20px" }}
+                    variant="success"
+                    onClick={() => {
+                      navigate(`/store/customer/${list.key}`);
+                    }}
+                  >
                     View Customers
                   </Button>
-                
                 </td>
                 <td>
-                  <Button style={{ marginRight: "20px" }} variant="success" 
-                  onClick={(event)=>getStoreProductHandler({key:list.key})}>
+                  <Button
+                    style={{ marginRight: "20px" }}
+                    variant="success"
+                    onClick={() => {
+                      navigate(`/store/product/${list.key}`);
+                    }}
+                  >
                     View Products
                   </Button>
-                
                 </td>
               </tr>
             );

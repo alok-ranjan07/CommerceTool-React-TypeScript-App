@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-  getStoreDetails,getStoreByKey,getCustomersInStore
+  getStoreByKey,
+  getCustomersInStore,
+  getCustomersInStoreByKey,
 } from "../../Service/store";
 import Table from "react-bootstrap/esm/Table";
 import { Button } from "react-bootstrap";
@@ -11,67 +13,67 @@ import styles from "../../CSS/MainCssFile.module.css";
 
 const StoreCustomerList = () => {
   const navigate = useNavigate();
-  const key=useParams();
-
+  const { key } = useParams();
   const [storeCustomerList, setStoreCustomerList] = useState([]);
   const [error, setError] = useState(null);
-  const [state, setState] = useState(false);
+
+  useEffect(() => {
+    getCustomersInStore({ key: key }).then((data) => {
+      setStoreCustomerList(data.body.results);
+      console.log(data.body.results);
+    });
+  }, [key]);
 
   const errorHandler = () => {
     setError(null);
   };
 
-  const backHandler = () => {
-    navigate("/store");
-  };
-
-const viewCustomerListHandler = () => {
-    console.log("event prop " + key)
+  const viewCustomerListHandler = () => {
+    console.log("event prop " + key);
     getCustomersInStore(key).then((data) => {
-        storeCustomerList(data.body.results);
+      setStoreCustomerList(data.body.results);
     });
     setError(null);
   };
 
-
-
-  const searchDataHandler =  (event) => {
-    getStoreByKey(event)
+  const searchDataHandler = (event) => {
+    getCustomersInStoreByKey(Object.assign(event, { storeKey: key }))
       .then((data) => {
-        setStoreList([data.body]);
+        setStoreCustomerList([data.body]);
         setError(null);
       })
       .catch(
         setError({
-          message: `Store with  key : "${event.input}" doesn't exist.`,
+          message: `Customer with store key : "${event.input}" doesn't exist.`,
         })
       );
   };
-  useEffect(() => {
-    console.log("event prop " + key)
-    getCustomersInStore(key).then((data) => {
-      setStoreCustomerList(data.body.results);
-    });
-  }, [state]);
 
   return (
     <React.Fragment>
-      <main style={{ display: "flex", justifyContent: "center", width: "50%" }}>
+      <main style={{ display: "flex", justifyContent: "center", width: "80%" }}>
         <SearchBar
           label={"Enter store Key"}
           onSave={searchDataHandler}
           error={errorHandler}
         />
-        <Button onClick={viewCustomerListHandler} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={viewCustomerListHandler}
+          style={{ marginLeft: "10px" }}
+        >
           <MDBIcon icon="sync" className={`${styles.icon} ${styles.sync}`} />
         </Button>
-        <Button onClick={backHandler} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={() => {
+            navigate("/store/storeList");
+          }}
+          style={{ marginLeft: "10px" }}
+        >
           <MDBIcon
             icon="angle-double-left"
             className={`${styles.icon} ${styles.leftArrow}`}
           />
         </Button>
-       
       </main>
 
       {error && <main>{error.message}</main>}
@@ -84,17 +86,21 @@ const viewCustomerListHandler = () => {
           </tr>
         </thead>
         <tbody>
-          {storeCustomerList.map((list) => {
-            return (
-              <tr key={list.id}>
-                <td>{list.firstName}</td>
-                <td>{list.key}</td>
-                <td>{list.email}</td>
-              </tr>
-            );
-          })}
+          {storeCustomerList.length !== 0 &&
+            storeCustomerList.map((list) => {
+              return (
+                <tr key={list.id}>
+                  <td>{list.firstName}</td>
+                  <td>{list.key}</td>
+                  <td>{list.email}</td>
+                </tr>
+              );
+            })}
         </tbody>
       </Table>
+      {storeCustomerList.length === 0 && (
+        <p style={{ color: "red" }}>No Product Available</p>
+      )}
     </React.Fragment>
   );
 };

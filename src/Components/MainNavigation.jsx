@@ -67,6 +67,16 @@ const MainNavigation = () => {
               Discount
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/store"
+              className={({ isActive }) =>
+                isActive ? classes.active : undefined
+              }
+            >
+              Store
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </header>

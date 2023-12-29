@@ -1,13 +1,13 @@
 import React from "react";
 import classes from "../../CSS/MainNavigation.module.css";
+import Card from "../../UI/Card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import Card from "../../UI/Card";
 
-const Store = () => {
+const Discount = () => {
   const navigate = useNavigate();
-  const viewStoreListHandler = () => {
-    navigate("/store/storeList");
+  const viewCartDiscountHandler = () => {
+    navigate("/discount/cartDiscount ");
   };
   return (
     <React.Fragment>
@@ -17,7 +17,12 @@ const Store = () => {
           <div className={classes.header}>
             <ul className={classes.list}>
               <li>
-                <Button onClick={viewStoreListHandler}>Store List</Button>
+                <Button onClick={viewCartDiscountHandler}>
+                  Cart-Discounts
+                </Button>
+              </li>
+              <li>
+                <Button>Discount-codes</Button>
               </li>
             </ul>
           </div>
@@ -26,4 +31,4 @@ const Store = () => {
     </React.Fragment>
   );
 };
-export default Store;
+export default Discount;

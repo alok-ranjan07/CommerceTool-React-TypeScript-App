@@ -8,6 +8,10 @@ export const getCartDiscountByKey = (event) => {
   return apiRoot.cartDiscounts().withKey({ key: event.input }).get().execute();
 };
 
+export const getCartDiscountByID = (event) => {
+  return apiRoot.cartDiscounts().withId({ ID: event.id }).get().execute();
+};
+
 export const deleteCartDiscountById = ({ id, version }) => {
   return apiRoot
     .cartDiscounts()
