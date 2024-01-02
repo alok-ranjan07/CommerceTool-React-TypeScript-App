@@ -5,6 +5,7 @@ import { addCartDiscount, getCartDiscountByID } from "../../Service/cart";
 import { getStoreDetails } from "../../Service/store";
 import { MDBIcon } from "mdb-react-ui-kit";
 import { useNavigate, useParams } from "react-router-dom";
+import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 
 const CartDiscountAdd = () => {
   const UseRegexPattern = ({ string }) => {
@@ -13,6 +14,7 @@ const CartDiscountAdd = () => {
   };
   const { cartDiscountId = null } = useParams();
   const navigate = useNavigate();
+  const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const currencyHandler = useRef();
   const discountAmountHandler = useRef();
   const validFromHandler = useRef();
@@ -58,7 +60,6 @@ const CartDiscountAdd = () => {
     if (cartDiscountId) {
       getCartDiscountByID({ id: cartDiscountId }).then((data) => {
         setPromoEdit((prevState) => {
-          console.log(data.body);
           return {
             ...prevState,
             promoName: data.body.name.en,
@@ -228,247 +229,273 @@ const CartDiscountAdd = () => {
 
   return (
     <React.Fragment>
-      <Card style={{ padding: "0 30px 0 30px" }}>
-        <main>
-          <Form onSubmit={submitHandler}>
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Promo name
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Promo name"
-                  defaultValue={promoEdit.promoName}
-                  onChange={(event) => {
-                    setPromo((prevState) => {
-                      return { ...prevState, promoName: event.target.value };
-                    });
-                  }}
-                  required
-                />
-                {error.nameError && <error>{error.nameError}</error>}
-              </Form.Group>
+      {!authorisedUser ? (
+        <UnAuthorizedUser />
+      ) : (
+        <Card style={{ padding: "0 30px 0 30px" }}>
+          <main>
+            <Form onSubmit={submitHandler}>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Promo name
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Promo name"
+                    defaultValue={promoEdit.promoName}
+                    onChange={(event) => {
+                      setPromo((prevState) => {
+                        return { ...prevState, promoName: event.target.value };
+                      });
+                    }}
+                    required
+                  />
+                  {error.nameError && <error>{error.nameError}</error>}
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Promo key
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  defaultValue={promoEdit.promoKey}
-                  placeholder="Enter Promo key"
-                  onChange={(event) => {
-                    setPromo((prevState) => {
-                      return { ...prevState, promoKey: event.target.value };
-                    });
-                  }}
-                  required
-                />
-                {error.keyError && <error>{error.keyError}</error>}
-              </Form.Group>
-            </Row>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Promo key
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    defaultValue={promoEdit.promoKey}
+                    placeholder="Enter Promo key"
+                    onChange={(event) => {
+                      setPromo((prevState) => {
+                        return { ...prevState, promoKey: event.target.value };
+                      });
+                    }}
+                    required
+                  />
+                  {error.keyError && <error>{error.keyError}</error>}
+                </Form.Group>
+              </Row>
 
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  Discount type
-                </Form.Label>
-                <Form.Select
-                  defaultValue={promoEdit.discountType}
-                  onChange={discountTypeHandler}
-                >
-                  <option selected>Choose...</option>
-                  <option value={"relative"}>Percentage Off</option>
-                  <option value={"absolute"}>Amount Off</option>
-                  <option value={"fixed"}>Fixed Price</option>
-                </Form.Select>
-              </Form.Group>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Discount type
+                  </Form.Label>
+                  <Form.Select
+                    defaultValue={promoEdit.discountType}
+                    onChange={discountTypeHandler}
+                  >
+                    <option selected>Choose...</option>
+                    <option value={"relative"}>Percentage Off</option>
+                    <option value={"absolute"}>Amount Off</option>
+                    <option value={"fixed"}>Fixed Price</option>
+                  </Form.Select>
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  Currency
-                </Form.Label>
-                <Form.Select
-                  defaultValue="USD"
-                  ref={currencyHandler}
-                  disabled={currencyBtnDisabled}
-                >
-                  <option selected>Choose...</option>
-                  <option value={"EUR"}>EUR</option>
-                  <option value={"USD"}>USD</option>
-                </Form.Select>
-              </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Currency
+                  </Form.Label>
+                  <Form.Select
+                    defaultValue="USD"
+                    ref={currencyHandler}
+                    disabled={currencyBtnDisabled}
+                  >
+                    <option selected>Choose...</option>
+                    <option value={"EUR"}>EUR</option>
+                    <option value={"USD"}>USD</option>
+                  </Form.Select>
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Discount amount
-                </Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="0"
-                  ref={discountAmountHandler}
-                  required
-                />
-              </Form.Group>
-            </Row>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Discount amount
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="0"
+                    ref={discountAmountHandler}
+                    required
+                  />
+                </Form.Group>
+              </Row>
 
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Valid from
-                </Form.Label>
-                <Form.Control
-                  type="date"
-                  ref={validFromHandler}
-                  defaultValue={promoEdit.validFrom}
-                  required
-                />
-              </Form.Group>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Valid from
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    ref={validFromHandler}
+                    defaultValue={promoEdit.validFrom}
+                    required
+                  />
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Valid until
-                </Form.Label>
-                <Form.Control
-                  type="date"
-                  ref={validUntilHandler}
-                  defaultValue={promoEdit.validUntil}
-                  required
-                />
-              </Form.Group>
-            </Row>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Valid until
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    ref={validUntilHandler}
+                    defaultValue={promoEdit.validUntil}
+                    required
+                  />
+                </Form.Group>
+              </Row>
 
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  Apply to
-                </Form.Label>
-                <Form.Select
-                  defaultValue={promoEdit.target}
-                  ref={targetHandler}
-                >
-                  <option selected>Choose..</option>
-                  <option value={"totalPrice"}>Total Price</option>
-                  <option value={"shipping"}>Shipping</option>
-                  <option value={"lineItems"}>Item</option>
-                  <option value={"customLineItems"}>Multibuy</option>
-                </Form.Select>
-              </Form.Group>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Apply to
+                  </Form.Label>
+                  <Form.Select
+                    defaultValue={promoEdit.target}
+                    ref={targetHandler}
+                  >
+                    <option selected>Choose..</option>
+                    <option value={"totalPrice"}>Total Price</option>
+                    <option value={"shipping"}>Shipping</option>
+                    <option value={"lineItems"}>Item</option>
+                    <option value={"customLineItems"}>Multibuy</option>
+                  </Form.Select>
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  <MDBIcon icon="star" style={{ scale: "0.5", color: "red" }} />
-                  Sort Order
-                </Form.Label>
-                <Form.Control
-                  type="number"
-                  step="0.001"
-                  min="0"
-                  max="1"
-                  placeholder="0.1"
-                  defaultValue={promoEdit.sortOrder}
-                  onChange={(event) => {
-                    setPromo((prevState) => {
-                      return { ...prevState, sortOrder: event.target.value };
-                    });
-                  }}
-                  required
-                />
-                {error.sortOrderError && <error>{error.sortOrderError}</error>}
-              </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    <MDBIcon
+                      icon="star"
+                      style={{ scale: "0.5", color: "red" }}
+                    />
+                    Sort Order
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    step="0.001"
+                    min="0"
+                    max="1"
+                    placeholder="0.1"
+                    defaultValue={promoEdit.sortOrder}
+                    onChange={(event) => {
+                      setPromo((prevState) => {
+                        return { ...prevState, sortOrder: event.target.value };
+                      });
+                    }}
+                    required
+                  />
+                  {error.sortOrderError && (
+                    <error>{error.sortOrderError}</error>
+                  )}
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>Store</Form.Label>
-                <Form.Select
-                  defaultValue={promoEdit.storeKey}
-                  ref={storeKeyHandler}
-                >
-                  <option selected>Choose..</option>
-                  {storeDetails.map((store) => (
-                    <option value={store.key} key={store.id}>
-                      {store.key}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Row>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Store
+                  </Form.Label>
+                  <Form.Select
+                    defaultValue={promoEdit.storeKey}
+                    ref={storeKeyHandler}
+                  >
+                    <option selected>Choose..</option>
+                    {storeDetails.map((store) => (
+                      <option value={store.key} key={store.id}>
+                        {store.key}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Row>
 
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  Discount Code :
-                </Form.Label>
-                <Form.Check
-                  type="switch"
-                  label="Requied"
-                  defaultChecked={promoEdit.discountCodeRequirement}
-                  className={`${styles.formLabel}`}
-                  onClick={(event) => {
-                    setPromo((prevState) => {
-                      return {
-                        ...prevState,
-                        discountCodeRequirement: event.target.checked,
-                      };
-                    });
-                  }}
-                />
-              </Form.Group>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Discount Code :
+                  </Form.Label>
+                  <Form.Check
+                    type="switch"
+                    label="Requied"
+                    defaultChecked={promoEdit.discountCodeRequirement}
+                    className={`${styles.formLabel}`}
+                    onClick={(event) => {
+                      setPromo((prevState) => {
+                        return {
+                          ...prevState,
+                          discountCodeRequirement: event.target.checked,
+                        };
+                      });
+                    }}
+                  />
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Label className={`${styles.formLabel}`}>
-                  Activate :
-                </Form.Label>
-                <Form.Check
-                  type="switch"
-                  label="Yes"
-                  defaultChecked={promoEdit.active}
-                  className={`${styles.formLabel}`}
-                  onClick={(event) => {
-                    setPromo((prevState) => {
-                      return {
-                        ...prevState,
-                        active: event.target.checked,
-                      };
-                    });
-                  }}
-                />
-              </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label className={`${styles.formLabel}`}>
+                    Activate :
+                  </Form.Label>
+                  <Form.Check
+                    type="switch"
+                    label="Yes"
+                    defaultChecked={promoEdit.active}
+                    className={`${styles.formLabel}`}
+                    onClick={(event) => {
+                      setPromo((prevState) => {
+                        return {
+                          ...prevState,
+                          active: event.target.checked,
+                        };
+                      });
+                    }}
+                  />
+                </Form.Group>
 
-              <Form.Group as={Col}>
-                <Form.Check
-                  type="checkbox"
-                  label="I agree"
-                  className={`${styles.formLabel}`}
-                  onClick={formValidHandler}
-                  checked={formValid}
-                />
-              </Form.Group>
-            </Row>
+                <Form.Group as={Col}>
+                  <Form.Check
+                    type="checkbox"
+                    label="I agree"
+                    className={`${styles.formLabel}`}
+                    onClick={formValidHandler}
+                    checked={formValid}
+                  />
+                </Form.Group>
+              </Row>
 
-            <Form.Group className="mb-3">
-              <Button variant="primary" type="submit" disabled={!formValid}>
-                Submit
-              </Button>
-              <Button onClick={backHandler} style={{ float: "left" }}>
-                <MDBIcon
-                  icon="angle-double-left"
-                  className={`${styles.icon} ${styles.leftArrow}`}
-                />
-              </Button>
-            </Form.Group>
-          </Form>
-          {error.pageError &&
-            error.pageError.map((log) => (
-              <p style={{ color: "red" }}>{log.message}</p>
-            ))}
-        </main>
-      </Card>
+              <Form.Group className="mb-3">
+                <Button variant="primary" type="submit" disabled={!formValid}>
+                  Submit
+                </Button>
+                <Button onClick={backHandler} style={{ float: "left" }}>
+                  <MDBIcon
+                    icon="angle-double-left"
+                    className={`${styles.icon} ${styles.leftArrow}`}
+                  />
+                </Button>
+              </Form.Group>
+            </Form>
+            {error.pageError &&
+              error.pageError.map((log) => (
+                <p style={{ color: "red" }}>{log.message}</p>
+              ))}
+          </main>
+        </Card>
+      )}
     </React.Fragment>
   );
 };

@@ -6,8 +6,10 @@ import SearchBar from "../../UI/SearchBar";
 import { MDBIcon } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
 import styles from "../../CSS/MainCssFile.module.css";
+import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 
 const StoreList = () => {
+  const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const navigate = useNavigate();
   const [storeList, setStoreList] = useState([]);
   const [error, setError] = useState(null);
@@ -44,72 +46,83 @@ const StoreList = () => {
 
   return (
     <React.Fragment>
-      <main style={{ display: "flex", justifyContent: "center", width: "70%" }}>
-        <SearchBar
-          label={"Enter store Key"}
-          onSave={searchDataHandler}
-          error={errorHandler}
-        />
-        <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
-          <MDBIcon icon="sync" className={`${styles.icon} ${styles.sync}`} />
-        </Button>
-        <Button
-          onClick={() => {
-            navigate("/store");
-          }}
-          style={{ marginLeft: "10px" }}
-        >
-          <MDBIcon
-            icon="angle-double-left"
-            className={`${styles.icon} ${styles.leftArrow}`}
-          />
-        </Button>
-      </main>
+      {!authorisedUser ? (
+        <UnAuthorizedUser />
+      ) : (
+        <div>
+          <main
+            style={{ display: "flex", justifyContent: "center", width: "70%" }}
+          >
+            <SearchBar
+              label={"Enter store Key"}
+              onSave={searchDataHandler}
+              error={errorHandler}
+            />
+            <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
+              <MDBIcon
+                icon="sync"
+                className={`${styles.icon} ${styles.sync}`}
+              />
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/store");
+              }}
+              style={{ marginLeft: "10px" }}
+            >
+              <MDBIcon
+                icon="angle-double-left"
+                className={`${styles.icon} ${styles.leftArrow}`}
+              />
+            </Button>
+          </main>
 
-      {error && <main>{error.message}</main>}
-      <Table striped bordered hover variant="dark">
-        <thead>
-          <tr>
-            <th>Store Name</th>
-            <th>Store Key</th>
-            <th>Customer</th>
-            <th>Product</th>
-          </tr>
-        </thead>
-        <tbody>
-          {storeList.map((list) => {
-            return (
-              <tr key={list.id}>
-                <td>{list.name.en}</td>
-                <td>{list.key}</td>
-
-                <td>
-                  <Button
-                    style={{ marginRight: "20px" }}
-                    variant="success"
-                    onClick={() => {
-                      navigate(`/store/customer/${list.key}`);
-                    }}
-                  >
-                    View Customers
-                  </Button>
-                </td>
-                <td>
-                  <Button
-                    style={{ marginRight: "20px" }}
-                    variant="success"
-                    onClick={() => {
-                      navigate(`/store/product/${list.key}`);
-                    }}
-                  >
-                    View Products
-                  </Button>
-                </td>
+          {error && <main>{error.message}</main>}
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>Store Name</th>
+                <th>Store Key</th>
+                <th>Customer</th>
+                <th>Product</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+            </thead>
+            <tbody>
+              {storeList.map((list) => {
+                return (
+                  <tr key={list.id}>
+                    <td>{list.name.en}</td>
+                    <td>{list.key}</td>
+
+                    <td>
+                      <Button
+                        style={{ marginRight: "20px" }}
+                        variant="success"
+                        onClick={() => {
+                          navigate(`/store/customer/${list.key}`);
+                        }}
+                      >
+                        View Customers
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        style={{ marginRight: "20px" }}
+                        variant="success"
+                        onClick={() => {
+                          navigate(`/store/product/${list.key}`);
+                        }}
+                      >
+                        View Products
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+      )}
     </React.Fragment>
   );
 };

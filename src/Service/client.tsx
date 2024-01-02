@@ -7,16 +7,32 @@ import {
 } from "@commercetools/sdk-client-v2";
 import fetch from "node-fetch";
 
-const projectKey: string = process.env.REACT_APP_DEV_PROJECT_KEY;
-const scopes: string[] = [process.env.REACT_APP_DEV_SCOPES];
+let clientId: string = "";
+let clientSecret: string = "";
+let projectKey: string = "";
+let scopes: string[] = [""];
+const authURL: string = process.env.REACT_APP_DEV_AUTH_URL;
+const apiURL: string = process.env.REACT_APP_DEV_API_URL;
+
+if (String(localStorage.getItem("skip")) === "true") {
+  clientId = process.env.REACT_APP_DEV_CLIENT_ID;
+  clientSecret = process.env.REACT_APP_DEV_CLIENT_SECRET;
+  projectKey = process.env.REACT_APP_DEV_PROJECT_KEY;
+  scopes = [process.env.REACT_APP_DEV_SCOPES];
+} else {
+  clientId = localStorage.getItem("clientId") as string;
+  clientSecret = localStorage.getItem("clientSecret") as string;
+  projectKey = localStorage.getItem("projectKey") as string;
+  scopes = [localStorage.getItem("scopes") as string];
+}
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: process.env.REACT_APP_DEV_AUTH_URL,
+  host: authURL,
   projectKey: projectKey,
   credentials: {
-    clientId: process.env.REACT_APP_DEV_CLIENT_ID,
-    clientSecret: process.env.REACT_APP_DEV_CLIENT_SECRET,
+    clientId: clientId,
+    clientSecret: clientSecret,
   },
   scopes,
   fetch,
@@ -24,7 +40,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: process.env.REACT_APP_DEV_API_URL,
+  host: apiURL,
   fetch,
 };
 

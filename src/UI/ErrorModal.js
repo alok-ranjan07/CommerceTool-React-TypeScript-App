@@ -23,20 +23,24 @@ const ModalOverlay = (props) => {
         <p>{props.message}</p>
       </div>
       <footer className={styles.actions}>
-        <Button
-          className={styles.cancleButton}
-          onClick={props.onCancle}
-          variant="outline-success"
-        >
-          CANCLE
-        </Button>
-        <Button
-          className={styles.confirmButton}
-          onClick={props.onConfirm}
-          variant="outline-danger"
-        >
-          DELETE
-        </Button>
+        {props.onCancle && (
+          <Button
+            className={styles.cancleButton}
+            onClick={props.onCancle}
+            variant="outline-success"
+          >
+            CANCLE
+          </Button>
+        )}
+        {props.onConfirm && (
+          <Button
+            className={styles.confirmButton}
+            onClick={props.onConfirm}
+            variant="outline-danger"
+          >
+            DELETE
+          </Button>
+        )}
       </footer>
     </Card>
   );
