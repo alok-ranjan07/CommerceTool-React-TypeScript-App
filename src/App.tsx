@@ -9,6 +9,8 @@ import StoreCustomerList from "./Pages/Store-Module/StoreCustomerList";
 import StoreProductList from "./Pages/Store-Module/StoreProductList";
 import Store from "./Pages/Store-Module/Store";
 import StoreList from "./Pages/Store-Module/StoreList";
+import StoreListAdd from "./Pages/Store-Module/StoreListAdd";
+import DiscountCodeList from "./Pages/Discount-Module/DiscountCodeList";
 
 const router = createBrowserRouter([
   {
@@ -24,8 +26,10 @@ const router = createBrowserRouter([
         path: "/discount/cartDiscount/add/:cartDiscountId",
         element: <CartDiscountAdd />,
       },
+      { path: "/discount/discountCode", element: <DiscountCodeList /> },
       { path: "/store", element: <Store /> },
       { path: "/store/storeList", element: <StoreList /> },
+      { path: "/store/storeList/add", element: <StoreListAdd /> },
       { path: "/store/customer/:key", element: <StoreCustomerList /> },
       { path: "/store/product/:key", element: <StoreProductList /> },
     ],

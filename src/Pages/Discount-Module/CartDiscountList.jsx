@@ -8,7 +8,7 @@ import Table from "react-bootstrap/esm/Table";
 import { Button } from "react-bootstrap";
 import SearchBar from "../../UI/SearchBar";
 import { MDBIcon } from "mdb-react-ui-kit";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../../CSS/MainCssFile.module.css";
 import ErrorModal from "../../UI/ErrorModal";
 import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
@@ -16,12 +16,20 @@ import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 const CartDiscountList = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const navigate = useNavigate();
+  const location = useLocation();
+  const [locationState, setLocationState] = useState({ name: null, key: null });
   const [discountList, setDiscountList] = useState([]);
   const [error, setError] = useState(null);
   const [state, setState] = useState(false);
   const [deleteModal, setDeleteModal] = useState(null);
 
   useEffect(() => {
+    //getting error here
+    if (location.state) {
+      setLocationState({ name: location.state.name, key: location.state.key });
+    }
+
+    window.history.replaceState({}, location.state);
     getCartDiscountList().then((data) => {
       setDiscountList(data.body.results);
     });
@@ -37,6 +45,7 @@ const CartDiscountList = () => {
       setDiscountList(data.body.results);
     });
     setError(null);
+    // setLocationState({ name: null, key: null });
   };
 
   const deleteDiscountHandler = ({ id, version }) => {
@@ -108,7 +117,9 @@ const CartDiscountList = () => {
               />
             </Button>
           </main>
-
+          {locationState.name && (
+            <main>{`"${locationState.name}" has been created with promo key : "${locationState.key}"`}</main>
+          )}
           {error && <main>{error.message}</main>}
           {deleteModal && (
             <ErrorModal

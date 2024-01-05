@@ -46,3 +46,8 @@ export const addCartDiscount = (event) => {
     })
     .execute();
 };
+
+export const getDiscountCode = () => {
+  return apiRoot.discountCodes().get().execute();
+};
+apiRoot.cartDiscounts().withId().post();

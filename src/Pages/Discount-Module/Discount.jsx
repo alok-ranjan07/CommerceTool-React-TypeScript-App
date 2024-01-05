@@ -8,9 +8,7 @@ import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 const Discount = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const navigate = useNavigate();
-  const viewCartDiscountHandler = () => {
-    navigate("/discount/cartDiscount ");
-  };
+
   return (
     <React.Fragment>
       {!authorisedUser ? (
@@ -22,12 +20,22 @@ const Discount = () => {
             <div className={classes.header}>
               <ul className={classes.list}>
                 <li>
-                  <Button onClick={viewCartDiscountHandler}>
+                  <Button
+                    onClick={() => {
+                      navigate("/discount/cartDiscount ");
+                    }}
+                  >
                     Cart-Discounts
                   </Button>
                 </li>
                 <li>
-                  <Button>Discount-codes</Button>
+                  <Button
+                    onClick={() => {
+                      navigate("/discount/discountCode");
+                    }}
+                  >
+                    Discount-codes
+                  </Button>
                 </li>
               </ul>
             </div>

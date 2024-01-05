@@ -156,7 +156,7 @@ const CartDiscountAdd = () => {
     addCartDiscount(promo)
       .then((data) => {
         navigate("/discount/cartDiscount", {
-          state: { name: data.body.name, key: data.body.key },
+          state: { name: data.body.name.en, key: data.body.key },
         });
       })
       .catch((log) => {

@@ -75,6 +75,17 @@ const StoreList = () => {
                 className={`${styles.icon} ${styles.leftArrow}`}
               />
             </Button>
+            <Button
+              onClick={() => {
+                navigate("/store/storeList/add");
+              }}
+              style={{ marginLeft: "10px" }}
+            >
+              <MDBIcon
+                icon="plus"
+                className={`${styles.icon} ${styles.plus}`}
+              />
+            </Button>
           </main>
 
           {error && <main>{error.message}</main>}

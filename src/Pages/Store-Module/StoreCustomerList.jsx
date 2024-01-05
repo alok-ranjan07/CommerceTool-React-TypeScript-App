@@ -59,7 +59,7 @@ const StoreCustomerList = () => {
             style={{ display: "flex", justifyContent: "center", width: "80%" }}
           >
             <SearchBar
-              label={"Enter store Key"}
+              label={"Enter key"}
               onSave={searchDataHandler}
               error={errorHandler}
             />

@@ -1,7 +1,10 @@
 import apiRoot from "./client";
 
 export const getStoreDetails = () => {
-  return apiRoot.stores().get().execute();
+  return apiRoot
+    .stores()
+    .get({ queryArgs: { limit: 40 } })
+    .execute();
 };
 
 export const getStoreByKey = (event) => {
@@ -30,5 +33,12 @@ export const getProductsInStore = (event) => {
     .inStoreKeyWithStoreKeyValue({ storeKey: event.key })
     .productSelectionAssignments()
     .get()
+    .execute();
+};
+
+export const addStore = (event) => {
+  return apiRoot
+    .stores()
+    .post({ body: { key: event.storeKey, name: { en: event.storeName } } })
     .execute();
 };
