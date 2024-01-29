@@ -8,6 +8,8 @@ declare global {
       REACT_APP_DEV_AUTH_URL: string;
       REACT_APP_DEV_API_URL: string;
       REACT_APP_DEV_SCOPES: string;
+      REACT_APP_SPEECH_KEY: string;
+      REACT_APP_SPEECH_REGION: string;
     }
   }
 }

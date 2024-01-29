@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../../CSS/MainCssFile.module.css";
 import ErrorModal from "../../UI/ErrorModal";
 import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
+import Microphone from "../../UI/Microphone";
 
 const CartDiscountList = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
@@ -22,6 +23,7 @@ const CartDiscountList = () => {
   const [error, setError] = useState(null);
   const [state, setState] = useState(false);
   const [deleteModal, setDeleteModal] = useState(null);
+  const [searchBarInputValue, setSearchBarInputValue] = useState("");
 
   useEffect(() => {
     //getting error here
@@ -33,7 +35,7 @@ const CartDiscountList = () => {
     getCartDiscountList().then((data) => {
       setDiscountList(data.body.results);
     });
-  }, [state]);
+  }, [location.state]);
 
   const errorHandler = () => {
     setError(null);
@@ -45,6 +47,7 @@ const CartDiscountList = () => {
       setDiscountList(data.body.results);
     });
     setError(null);
+    setSearchBarInputValue("");
     // setLocationState({ name: null, key: null });
   };
 
@@ -74,6 +77,11 @@ const CartDiscountList = () => {
       );
   };
 
+  const speechToTextHandler = (event) => {
+    setSearchBarInputValue(event.message);
+    searchDataHandler({ input: event.message });
+  };
+
   return (
     <React.Fragment>
       {!authorisedUser ? (
@@ -84,6 +92,7 @@ const CartDiscountList = () => {
             style={{ display: "flex", justifyContent: "center", width: "60%" }}
           >
             <SearchBar
+              inputValue={searchBarInputValue}
               label={"Enter Promo Key"}
               onSave={searchDataHandler}
               error={errorHandler}
@@ -109,13 +118,14 @@ const CartDiscountList = () => {
               onClick={() => {
                 navigate("/discount/cartDiscount/add");
               }}
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", marginRight: "10px" }}
             >
               <MDBIcon
                 icon="plus"
                 className={`${styles.icon} ${styles.plus}`}
               />
             </Button>
+            <Microphone onStop={speechToTextHandler} />
           </main>
           {locationState.name && (
             <main>{`"${locationState.name}" has been created with promo key : "${locationState.key}"`}</main>

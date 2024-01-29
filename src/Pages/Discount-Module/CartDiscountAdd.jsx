@@ -74,6 +74,7 @@ const CartDiscountAdd = () => {
             active: data.body.isActive,
           };
         });
+        //discountCodeRequirement and active state is not changing- need to resolve
       });
     }
   }, [cartDiscountId]);

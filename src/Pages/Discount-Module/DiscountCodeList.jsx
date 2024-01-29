@@ -11,11 +11,19 @@ const DiscountCodeList = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const navigate = useNavigate();
   const [discountCode, setDiscountCode] = useState([]);
+
   useEffect(() => {
     getDiscountCode().then((data) => {
       setDiscountCode(data.body.results);
     });
   }, []);
+
+  const viewListHandler = () => {
+    getDiscountCode().then((data) => {
+      setDiscountCode(data.body.results);
+    });
+    // setError(null);
+  };
 
   return (
     <React.Fragment>
@@ -31,12 +39,12 @@ const DiscountCodeList = () => {
               onSave={searchDataHandler}
               error={errorHandler}
             /> */}
-            {/* <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
+            <Button onClick={viewListHandler} style={{ marginLeft: "10px" }}>
               <MDBIcon
                 icon="sync"
                 className={`${styles.icon} ${styles.sync}`}
               />
-            </Button> */}
+            </Button>
             <Button
               onClick={() => {
                 navigate("/discount");
@@ -82,7 +90,10 @@ const DiscountCodeList = () => {
 
                     <td>{list.isActive ? "Yes" : "No"}</td>
                     <td>
-                      {/* getting error here */}
+                      {list.cartDiscounts.map((data) => {
+                        return data.id;
+                      })}
+                      {/* getting error while trying to get the cart name from the id */}
                       {/* {list.cartDiscounts.map(async (data) => {
                         return await getCartDiscountByID({ id: data.id }).then(
                           (cart) => {

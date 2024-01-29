@@ -1,9 +1,13 @@
 import { MDBInputGroup, MDBInput, MDBIcon, MDBBtn } from "mdb-react-ui-kit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./SearchBar.module.css";
 
 const SearchBar = (props) => {
-  const [userInput, setUserInput] = useState({ input: "" });
+  const [userInput, setUserInput] = useState({ input: props.inputValue });
+  useEffect(() => {
+    setUserInput({ input: props.inputValue });
+  }, [props]);
+
   const inputChangeHandler = (event) => {
     props.error();
     setUserInput((prevState) => {

@@ -50,4 +50,3 @@ export const addCartDiscount = (event) => {
 export const getDiscountCode = () => {
   return apiRoot.discountCodes().get().execute();
 };
-apiRoot.cartDiscounts().withId().post();
