@@ -11,6 +11,7 @@ import Store from "./Pages/Store-Module/Store";
 import StoreList from "./Pages/Store-Module/StoreList";
 import StoreListAdd from "./Pages/Store-Module/StoreListAdd";
 import DiscountCodeList from "./Pages/Discount-Module/DiscountCodeList";
+import Product from "./Pages/Product-Module/Product";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: "/store/storeList/add", element: <StoreListAdd /> },
       { path: "/store/customer/:key", element: <StoreCustomerList /> },
       { path: "/store/product/:key", element: <StoreProductList /> },
+      { path: "/product", element: <Product /> },
     ],
   },
 ]);
