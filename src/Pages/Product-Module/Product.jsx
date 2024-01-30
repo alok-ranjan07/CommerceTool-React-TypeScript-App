@@ -1,24 +1,53 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../UI/Card";
+import { MDBIcon } from "mdb-react-ui-kit";
 import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 import {
   createOrderFromProductSKU,
   getProductDetails,
+  getProductProjectionsDetails,
 } from "../../Service/product";
 import { Button, Table } from "react-bootstrap";
+import SearchBar from "../../UI/SearchBar";
+import styles from "../../CSS/MainCssFile.module.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Product = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const [productList, setProductList] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { key } = useParams();
 
-  useEffect(() => {
-    getProductDetails().then((data) => {
+  // useEffect(() => {
+  //   getProductDetails().then((data) => {
+  //     setProductList(data.body.results);
+  //   });
+  // }, []);
+  // console.log(productList);
+
+  const viewProductListHandler = () => {
+    getProductProjectionsDetails({ key: key }).then((data) => {
       setProductList(data.body.results);
     });
-  }, []);
-  console.log(productList);
+  };
 
+  const searchDataHandler = (event) => {
+    getProductProjectionsDetails({ key: key })
+      .then((data) => {
+        setProductList([data.body]);
+        setError(null);
+      })
+      .catch(
+        setError({
+          message: `Product with  key : "${event.input}" doesn't exist.`,
+        })
+      );
+  };
+
+  const errorHandler = () => {
+    setError(null);
+  };
   const placeOrderHandler = (event) => {
     createOrderFromProductSKU(event).then((order) => {
       setError({
@@ -32,7 +61,37 @@ const Product = () => {
       {!authorisedUser ? (
         <UnAuthorizedUser />
       ) : (
+        
         <Card>
+           <main
+            style={{ display: "flex", justifyContent: "center", width: "80%" }}
+          >
+              <SearchBar
+              label={"Enter product key"}
+              onSave={searchDataHandler}
+              error={errorHandler}
+            />
+            <Button
+              onClick={viewProductListHandler}
+              style={{ marginLeft: "10px" }}
+            >
+              <MDBIcon
+                icon="sync"
+                className={`${styles.icon} ${styles.sync}`}
+              />
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/store/storeList");
+              }}
+              style={{ marginLeft: "10px" }}
+            >
+              <MDBIcon
+                icon="angle-double-left"
+                className={`${styles.icon} ${styles.leftArrow}`}
+              />
+            </Button>
+          </main>
           {error && <main>{error.message}</main>}
           <Table striped bordered hover variant="dark">
             <thead>

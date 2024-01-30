@@ -7,6 +7,16 @@ export const getProductDetails = () => {
     .execute();
 };
 
+export const getProductProjectionsDetails = (event) => {
+  console.log("key"  + event)
+  return apiRoot.productProjections().search().get(
+    { queryArgs:{
+      "text.en":"seeds",
+      staged:true,
+    } }
+  ).execute();
+};
+
 export const createOrderFromProductSKU = (event) => {
   return apiRoot
     .carts()
