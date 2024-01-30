@@ -11,8 +11,9 @@ export const getProductProjectionsDetails = (event) => {
   console.log("key"  + event)
   return apiRoot.productProjections().search().get(
     { queryArgs:{
-      "text.en":"seeds",
-      staged:true,
+      "text.en":"Wallet",
+      limit:10,
+        staged:true
     } }
   ).execute();
 };

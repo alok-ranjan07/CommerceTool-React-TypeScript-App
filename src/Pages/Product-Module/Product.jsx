@@ -35,7 +35,8 @@ const Product = () => {
   const searchDataHandler = (event) => {
     getProductProjectionsDetails({ key: key })
       .then((data) => {
-        setProductList([data.body]);
+        console.log("list of product " + data.body.results.length)
+        setProductList(data.body.results);
         setError(null);
       })
       .catch(
@@ -97,6 +98,7 @@ const Product = () => {
             <thead>
               <tr>
                 <th>Product Name</th>
+                <th>Product Description</th>
                 <th>Product SKU</th>
                 <th>Price</th>
                 <th>Action</th>
@@ -106,11 +108,12 @@ const Product = () => {
               {productList.map((list) => {
                 return (
                   <tr key={list.id}>
-                    <td>{list.masterData.current.name.en}</td>
-                    <td>{list.masterData.current.masterVariant.sku}</td>
+                    <td>{list.name.en}</td>
+                    <td>{list.metaDescription.en}</td>
+                    <td>{list.masterVariant.sku}</td>
                     <td>
-                      {`${list.masterData.current.masterVariant.prices[0].value.centAmount} 
-                        ${list.masterData.current.masterVariant.prices[0].value.currencyCode}`}
+                      {`${list.masterVariant.prices[0].value.centAmount} 
+                        ${list.masterVariant.prices[0].value.currencyCode}`}
                     </td>
                     <td>
                       <Button
@@ -119,7 +122,7 @@ const Product = () => {
                         onClick={() => {
                           placeOrderHandler({
                             arrayOfSKUs: [
-                              list.masterData.current.masterVariant.sku,
+                              list.masterVariant.sku,
                             ],
                           });
                         }}
