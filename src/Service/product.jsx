@@ -1,4 +1,5 @@
 import { apiRoot } from "./client";
+import { myApiRoot } from "./client";
 
 // export const getProductDetails = () => {
 //   return apiRoot
@@ -87,4 +88,79 @@ export const createOrderFromProductSKU = async (event) => {
       },
     })
     .execute();
+};
+
+export const createOrderFromProductSKUandMeApi = (event) => {
+  return myApiRoot
+    .me()
+    .carts()
+    .post({
+      body: {
+        currency: "EUR",
+        country: "DE",
+        shippingAddress: { country: "DE" },
+      },
+    })
+    .execute()
+    .then((cart) => {
+      return myApiRoot
+        .me()
+        .carts()
+        .withId({ ID: cart.body.id })
+        .post({
+          body: {
+            version: cart.body.version,
+            actions: event.arrayOfSKUs.map((sku) => {
+              return {
+                action: "addLineItem",
+                sku,
+              };
+            }),
+          },
+        })
+        .execute();
+    })
+    .then(async (cart) => {
+      const matchingShippingMethod = await myApiRoot
+        .shippingMethods()
+        .matchingCart()
+        .get({
+          queryArgs: {
+            cartId: cart.body.id,
+          },
+        })
+        .execute()
+        .then((response) => response.body.results[0]);
+      return myApiRoot
+        .me()
+        .carts()
+        .withId({ ID: cart.body.id })
+        .post({
+          body: {
+            version: cart.body.version,
+            actions: [
+              {
+                action: "setShippingMethod",
+                shippingMethod: {
+                  typeId: "shipping-method",
+                  id: matchingShippingMethod.id,
+                },
+              },
+            ],
+          },
+        })
+        .execute();
+    })
+    .then((cart) => {
+      return myApiRoot
+        .me()
+        .orders()
+        .post({
+          body: {
+            version: cart.body.version,
+            id: cart.body.id,
+          },
+        })
+        .execute();
+    });
 };

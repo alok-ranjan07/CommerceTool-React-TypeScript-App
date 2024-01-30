@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
-import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 import {
   createOrderFromProductSKU,
+  createOrderFromProductSKUandMeApi,
   getProductProjectionsDetails,
 } from "../../Service/product";
 import { Button, Table } from "react-bootstrap";
@@ -10,9 +10,11 @@ import SearchBar from "../../UI/SearchBar";
 import styles from "../../CSS/MainCssFile.module.css";
 import { useNavigate } from "react-router-dom";
 import Microphone from "../../UI/Microphone";
+import UnAuthorizedCustomer from "../../Components/UnAuthorizedCustomer";
 
 const Product = () => {
-  const authorisedUser = localStorage.getItem("authorisedUser") === "true";
+  const authorisedUser =
+    sessionStorage.getItem("authorisedCustomer") === "true";
   const [productList, setProductList] = useState([]);
   const [error, setError] = useState(null);
   const [searchBarInputValue, setSearchBarInputValue] = useState("");
@@ -56,11 +58,17 @@ const Product = () => {
   };
 
   const placeOrderHandler = (event) => {
-    createOrderFromProductSKU(event).then((order) => {
-      setError({
-        message: ` Order created successfully with orderId : "${order.body.id}" `,
+    createOrderFromProductSKUandMeApi(event)
+      .then((order) => {
+        setError({
+          message: ` Order created successfully with orderId : "${order.body.id}" `,
+        });
+      })
+      .catch((log) => {
+        setError({
+          message: `"${log.body.errors[0].detailedErrorMessage}" `,
+        });
       });
-    });
   };
 
   const speechToTextHandler = (event) => {
@@ -71,7 +79,7 @@ const Product = () => {
   return (
     <React.Fragment>
       {!authorisedUser ? (
-        <UnAuthorizedUser />
+        <UnAuthorizedCustomer />
       ) : (
         <div>
           <main
@@ -105,7 +113,7 @@ const Product = () => {
             </Button>
             <Microphone onStop={speechToTextHandler} />
           </main>
-          {error && <main>{error.message}</main>}
+          {error && <p style={{ color: "red" }}>{error.message}</p>}
           <Table striped bordered hover variant="dark">
             <thead>
               <tr>

@@ -130,7 +130,7 @@ const CartDiscountList = () => {
           {locationState.name && (
             <main>{`"${locationState.name}" has been created with promo key : "${locationState.key}"`}</main>
           )}
-          {error && <main>{error.message}</main>}
+          {error && <p style={{ color: "red" }}>{error.message}</p>}
           {deleteModal && (
             <ErrorModal
               title={deleteModal.title}
