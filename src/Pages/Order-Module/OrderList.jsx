@@ -41,8 +41,8 @@ const OrderList = () => {
             <thead>
               <tr>
                 <th>Order Id</th>
-                <th>Product SKU</th>
-                <th>Product Price</th>
+                <th>Order Items</th>
+                <th>Order Total</th>
                 <th>Billing Address</th>
                 <th>Order CreatedAt</th>
                 <th>Order State</th>
