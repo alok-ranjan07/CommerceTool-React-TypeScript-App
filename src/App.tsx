@@ -14,6 +14,7 @@ import DiscountCodeList from "./Pages/Discount-Module/DiscountCodeList";
 import Product from "./Pages/Product-Module/Product";
 import CustomerLogin from "./Pages/Customer-Module/CustomerLogin";
 import { myApiRoot } from "./Service/client";
+import OrderList from './Pages/Order-Module/OrderList'
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: "/store/product/:key", element: <StoreProductList /> },
       { path: "/product", element: <Product /> },
       { path: "/customer", element: <CustomerLogin /> },
+      { path: "/order", element: <OrderList /> }
     ],
   },
 ]);
