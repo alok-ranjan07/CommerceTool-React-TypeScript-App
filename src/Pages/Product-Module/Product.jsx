@@ -9,11 +9,13 @@ import { Button, Table } from "react-bootstrap";
 import SearchBar from "../../UI/SearchBar";
 import styles from "../../CSS/MainCssFile.module.css";
 import { useNavigate } from "react-router-dom";
+import Microphone from "../../UI/Microphone";
 
 const Product = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const [productList, setProductList] = useState([]);
   const [error, setError] = useState(null);
+  const [searchBarInputValue, setSearchBarInputValue] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,8 +35,14 @@ const Product = () => {
   const searchDataHandler = (event) => {
     getProductProjectionsDetails(event)
       .then((data) => {
-        setProductList(data.body.results);
-        setError(null);
+        if (data.body.results.length > 0) {
+          setProductList(data.body.results);
+          setError(null);
+        } else {
+          setError({
+            message: `Product with text : "${event.input}" doesn't exist.`,
+          });
+        }
       })
       .catch(
         setError({
@@ -55,6 +63,11 @@ const Product = () => {
     });
   };
 
+  const speechToTextHandler = (event) => {
+    setSearchBarInputValue(event.message);
+    searchDataHandler({ input: event.message });
+  };
+
   return (
     <React.Fragment>
       {!authorisedUser ? (
@@ -65,6 +78,7 @@ const Product = () => {
             style={{ display: "flex", justifyContent: "center", width: "80%" }}
           >
             <SearchBar
+              inputValue={searchBarInputValue}
               label={"Enter product key"}
               onSave={searchDataHandler}
               error={errorHandler}
@@ -80,15 +94,16 @@ const Product = () => {
             </Button>
             <Button
               onClick={() => {
-                navigate("/store/storeList");
+                navigate("/");
               }}
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "10px", marginRight: "10px" }}
             >
               <MDBIcon
                 icon="angle-double-left"
                 className={`${styles.icon} ${styles.leftArrow}`}
               />
             </Button>
+            <Microphone onStop={speechToTextHandler} />
           </main>
           {error && <main>{error.message}</main>}
           <Table striped bordered hover variant="dark">

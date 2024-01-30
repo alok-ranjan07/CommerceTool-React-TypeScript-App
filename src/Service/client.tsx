@@ -62,10 +62,10 @@ const createApiClient = () => {
 };
 
 const createMyApiClient = () => {
-  clientId = "kZ8x7I-F1Gjk7NcM2HeGh0A6";
-  clientSecret = process.env.REACT_APP_ME_DEV_CLIENT_SECRET;
-  projectKey = "sunrise-spa-scratch";
-  scopes = [process.env.REACT_APP_ME_DEV_SCOPES];
+  clientId = process.env.REACT_APP_ME_CLIENT_ID;
+  clientSecret = process.env.REACT_APP_ME_CLIENT_SECRET;
+  projectKey = process.env.REACT_APP_ME_PROJECT_KEY;
+  scopes = [process.env.REACT_APP_ME_SCOPES];
   username = sessionStorage.getItem("customerEmail") as string;
   password = sessionStorage.getItem("customerPassword") as string;
 
