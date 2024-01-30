@@ -12,7 +12,19 @@ import StoreList from "./Pages/Store-Module/StoreList";
 import StoreListAdd from "./Pages/Store-Module/StoreListAdd";
 import DiscountCodeList from "./Pages/Discount-Module/DiscountCodeList";
 import Product from "./Pages/Product-Module/Product";
+import CustomerLogin from "./Pages/Customer-Module/CustomerLogin";
+import { myApiRoot } from "./Service/client";
 
+myApiRoot
+  .me()
+  .get()
+  .execute()
+  .then((data) => {
+    console.log(data.body);
+  })
+  .catch((log) => {
+    console.log(log);
+  });
 const router = createBrowserRouter([
   {
     path: "/",
@@ -34,6 +46,7 @@ const router = createBrowserRouter([
       { path: "/store/customer/:key", element: <StoreCustomerList /> },
       { path: "/store/product/:key", element: <StoreProductList /> },
       { path: "/product", element: <Product /> },
+      { path: "/customer", element: <CustomerLogin /> },
     ],
   },
 ]);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import styles from "../CSS/MainCssFile.module.css";
 import { MDBIcon } from "mdb-react-ui-kit";
-import apiRoot from "../Service/client";
+import { apiRoot } from "../Service/client";
 
 const Home = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";

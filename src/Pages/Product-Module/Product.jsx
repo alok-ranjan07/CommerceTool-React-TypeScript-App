@@ -1,47 +1,44 @@
 import React, { useEffect, useState } from "react";
-import Card from "../../UI/Card";
 import { MDBIcon } from "mdb-react-ui-kit";
 import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 import {
   createOrderFromProductSKU,
-  getProductDetails,
   getProductProjectionsDetails,
 } from "../../Service/product";
 import { Button, Table } from "react-bootstrap";
 import SearchBar from "../../UI/SearchBar";
 import styles from "../../CSS/MainCssFile.module.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Product = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const [productList, setProductList] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { key } = useParams();
 
-  // useEffect(() => {
-  //   getProductDetails().then((data) => {
-  //     setProductList(data.body.results);
-  //   });
-  // }, []);
-  // console.log(productList);
-
-  const viewProductListHandler = () => {
-    getProductProjectionsDetails({ key: key }).then((data) => {
+  useEffect(() => {
+    getProductProjectionsDetails({ input: "" }).then((data) => {
       setProductList(data.body.results);
     });
+  }, []);
+  console.log(productList);
+
+  const viewProductListHandler = () => {
+    getProductProjectionsDetails({ input: "" }).then((data) => {
+      setProductList(data.body.results);
+    });
+    setError(null);
   };
 
   const searchDataHandler = (event) => {
-    getProductProjectionsDetails({ key: key })
+    getProductProjectionsDetails(event)
       .then((data) => {
-        console.log("list of product " + data.body.results.length)
         setProductList(data.body.results);
         setError(null);
       })
       .catch(
         setError({
-          message: `Product with  key : "${event.input}" doesn't exist.`,
+          message: `Product with text : "${event.input}" doesn't exist.`,
         })
       );
   };
@@ -49,6 +46,7 @@ const Product = () => {
   const errorHandler = () => {
     setError(null);
   };
+
   const placeOrderHandler = (event) => {
     createOrderFromProductSKU(event).then((order) => {
       setError({
@@ -62,12 +60,11 @@ const Product = () => {
       {!authorisedUser ? (
         <UnAuthorizedUser />
       ) : (
-        
-        <Card>
-           <main
+        <div>
+          <main
             style={{ display: "flex", justifyContent: "center", width: "80%" }}
           >
-              <SearchBar
+            <SearchBar
               label={"Enter product key"}
               onSave={searchDataHandler}
               error={errorHandler}
@@ -98,7 +95,6 @@ const Product = () => {
             <thead>
               <tr>
                 <th>Product Name</th>
-                <th>Product Description</th>
                 <th>Product SKU</th>
                 <th>Price</th>
                 <th>Action</th>
@@ -109,7 +105,6 @@ const Product = () => {
                 return (
                   <tr key={list.id}>
                     <td>{list.name.en}</td>
-                    <td>{list.metaDescription.en}</td>
                     <td>{list.masterVariant.sku}</td>
                     <td>
                       {`${list.masterVariant.prices[0].value.centAmount} 
@@ -121,9 +116,7 @@ const Product = () => {
                         variant="success"
                         onClick={() => {
                           placeOrderHandler({
-                            arrayOfSKUs: [
-                              list.masterVariant.sku,
-                            ],
+                            arrayOfSKUs: [list.masterVariant.sku],
                           });
                         }}
                       >
@@ -135,7 +128,7 @@ const Product = () => {
               })}
             </tbody>
           </Table>
-        </Card>
+        </div>
       )}
     </React.Fragment>
   );

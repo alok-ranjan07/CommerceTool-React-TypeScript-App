@@ -4,6 +4,7 @@ import {
   type AuthMiddlewareOptions,
   ClientBuilder,
   type HttpMiddlewareOptions,
+  type PasswordAuthMiddlewareOptions,
 } from "@commercetools/sdk-client-v2";
 import fetch from "node-fetch";
 
@@ -11,51 +12,94 @@ let clientId: string = "";
 let clientSecret: string = "";
 let projectKey: string = "";
 let scopes: string[] = [""];
+let username: string = "";
+let password: string = "";
 const authURL: string = process.env.REACT_APP_DEV_AUTH_URL;
 const apiURL: string = process.env.REACT_APP_DEV_API_URL;
 
-if (String(localStorage.getItem("skip")) === "true") {
-  clientId = process.env.REACT_APP_DEV_CLIENT_ID;
-  clientSecret = process.env.REACT_APP_DEV_CLIENT_SECRET;
-  projectKey = process.env.REACT_APP_DEV_PROJECT_KEY;
-  scopes = [process.env.REACT_APP_DEV_SCOPES];
-} else {
-  clientId = localStorage.getItem("clientId") as string;
-  clientSecret = localStorage.getItem("clientSecret") as string;
-  projectKey = localStorage.getItem("projectKey") as string;
-  scopes = [localStorage.getItem("scopes") as string];
-}
+const createApiClient = () => {
+  if (String(localStorage.getItem("skip")) === "true") {
+    clientId = process.env.REACT_APP_DEV_CLIENT_ID;
+    clientSecret = process.env.REACT_APP_DEV_CLIENT_SECRET;
+    projectKey = process.env.REACT_APP_DEV_PROJECT_KEY;
+    scopes = [process.env.REACT_APP_DEV_SCOPES];
+  } else {
+    clientId = localStorage.getItem("clientId") as string;
+    clientSecret = localStorage.getItem("clientSecret") as string;
+    projectKey = localStorage.getItem("projectKey") as string;
+    scopes = [localStorage.getItem("scopes") as string];
+  }
 
-// Configure authMiddlewareOptions
-const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: authURL,
-  projectKey: projectKey,
-  credentials: {
-    clientId: clientId,
-    clientSecret: clientSecret,
-  },
-  scopes,
-  fetch,
+  // Configure authMiddlewareOptions
+  const authMiddlewareOptions: AuthMiddlewareOptions = {
+    host: authURL,
+    projectKey: projectKey,
+    credentials: {
+      clientId: clientId,
+      clientSecret: clientSecret,
+    },
+    scopes,
+    fetch,
+  };
+
+  // Configure httpMiddlewareOptions
+  const httpMiddlewareOptions: HttpMiddlewareOptions = {
+    host: apiURL,
+    fetch,
+  };
+
+  // Create the ctpClient
+  const ctpClient = new ClientBuilder()
+    .withClientCredentialsFlow(authMiddlewareOptions)
+    .withProjectKey(projectKey)
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware() // Include middleware for logging
+    .build();
+
+  return createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+    projectKey: projectKey,
+  });
 };
 
-// Configure httpMiddlewareOptions
-const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: apiURL,
-  fetch,
+const createMyApiClient = () => {
+  clientId = "kZ8x7I-F1Gjk7NcM2HeGh0A6";
+  clientSecret = process.env.REACT_APP_ME_DEV_CLIENT_SECRET;
+  projectKey = "sunrise-spa-scratch";
+  scopes = [process.env.REACT_APP_ME_DEV_SCOPES];
+  username = sessionStorage.getItem("customerEmail") as string;
+  password = sessionStorage.getItem("customerPassword") as string;
+
+  const authMiddlewareOptions: PasswordAuthMiddlewareOptions = {
+    host: authURL,
+    projectKey: projectKey,
+    credentials: {
+      clientId: clientId,
+      clientSecret: clientSecret,
+      user: {
+        username: username,
+        password: password,
+      },
+    },
+    scopes,
+    fetch,
+  };
+
+  const httpMiddlewareOptions: HttpMiddlewareOptions = {
+    host: apiURL,
+    fetch,
+  };
+
+  const client = new ClientBuilder()
+    .withPasswordFlow(authMiddlewareOptions)
+    .withProjectKey(projectKey)
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware() // Include middleware for logging
+    .build();
+
+  return createApiBuilderFromCtpClient(client).withProjectKey({
+    projectKey: projectKey,
+  });
 };
 
-// Create the ctpClient
-const ctpClient = new ClientBuilder()
-  .withClientCredentialsFlow(authMiddlewareOptions)
-  .withProjectKey(projectKey)
-  .withHttpMiddleware(httpMiddlewareOptions)
-  .withLoggerMiddleware() // Include middleware for logging
-  .build();
-
-const apiRoot: ByProjectKeyRequestBuilder = createApiBuilderFromCtpClient(
-  ctpClient
-).withProjectKey({
-  projectKey: projectKey,
-});
-
-export default apiRoot;
+export const apiRoot: ByProjectKeyRequestBuilder = createApiClient();
+export const myApiRoot: ByProjectKeyRequestBuilder = createMyApiClient();
