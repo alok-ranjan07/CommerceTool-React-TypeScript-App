@@ -22,7 +22,7 @@ const Discount = () => {
                 <li>
                   <Button
                     onClick={() => {
-                      navigate("/discount/cartDiscount ");
+                      navigate("/discount/cartDiscount");
                     }}
                   >
                     Cart-Discounts

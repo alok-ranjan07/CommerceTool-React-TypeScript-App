@@ -27,9 +27,9 @@ export const createOrderFromProductSKU = async (event) => {
     .carts()
     .post({
       body: {
-        currency: "EUR",
-        country: "DE",
-        shippingAddress: { country: "DE" },
+        currency: "USD",
+        country: "US",
+        shippingAddress: { country: "US" },
       },
     })
     .execute();
@@ -96,9 +96,9 @@ export const createOrderFromProductSKUandMeApi = (event) => {
     .carts()
     .post({
       body: {
-        currency: "EUR",
-        country: "DE",
-        shippingAddress: { country: "DE" },
+        currency: "USD",
+        country: "US",
+        shippingAddress: { country: "US" },
       },
     })
     .execute()

@@ -13,14 +13,16 @@ import styles from "../../CSS/MainCssFile.module.css";
 import ErrorModal from "../../UI/ErrorModal";
 import UnAuthorizedUser from "../../Components/UnAuthorizedUser";
 import Microphone from "../../UI/Microphone";
-
+import { GetCartDiscountListByGQL } from "../../GraphQL/Queries";
 const CartDiscountList = () => {
+  const { result, error, loading } = GetCartDiscountListByGQL();
+
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
   const navigate = useNavigate();
   const location = useLocation();
   const [locationState, setLocationState] = useState({ name: null, key: null });
   const [discountList, setDiscountList] = useState([]);
-  const [error, setError] = useState(null);
+  const [errors, setError] = useState(null);
   const [state, setState] = useState(false);
   const [deleteModal, setDeleteModal] = useState(null);
   const [searchBarInputValue, setSearchBarInputValue] = useState("");
@@ -32,10 +34,13 @@ const CartDiscountList = () => {
     }
 
     window.history.replaceState({}, location.state);
-    getCartDiscountList().then((data) => {
-      setDiscountList(data.body.results);
-    });
-  }, [location.state]);
+
+    setDiscountList(result);
+
+    // getCartDiscountList().then((data) => {
+    //   setDiscountList(data.body.results);
+    // });
+  }, [location.state, result]);
 
   const errorHandler = () => {
     setError(null);
@@ -43,9 +48,10 @@ const CartDiscountList = () => {
   };
 
   const viewListHandler = () => {
-    getCartDiscountList().then((data) => {
-      setDiscountList(data.body.results);
-    });
+    // getCartDiscountList().then((data) => {
+    //   setDiscountList(data.body.results);
+    // });
+    setDiscountList(result);
     setError(null);
     setSearchBarInputValue("");
     // setLocationState({ name: null, key: null });
@@ -130,7 +136,7 @@ const CartDiscountList = () => {
           {locationState.name && (
             <main>{`"${locationState.name}" has been created with promo key : "${locationState.key}"`}</main>
           )}
-          {error && <p style={{ color: "red" }}>{error.message}</p>}
+          {errors && <p style={{ color: "red" }}>{errors.message}</p>}
           {deleteModal && (
             <ErrorModal
               title={deleteModal.title}
@@ -162,7 +168,7 @@ const CartDiscountList = () => {
               {discountList.map((list) => {
                 return (
                   <tr key={list.id}>
-                    <td>{list.name.en}</td>
+                    <td>{list.name}</td>
                     <td>{list.key}</td>
                     <td>
                       {list.stores.map((event) => {

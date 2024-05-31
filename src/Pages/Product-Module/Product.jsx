@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MDBIcon } from "mdb-react-ui-kit";
 import {
-  createOrderFromProductSKU,
+  // createOrderFromProductSKU,
   createOrderFromProductSKUandMeApi,
   getProductProjectionsDetails,
 } from "../../Service/product";
@@ -9,7 +9,7 @@ import { Button, Table } from "react-bootstrap";
 import SearchBar from "../../UI/SearchBar";
 import styles from "../../CSS/MainCssFile.module.css";
 import { useNavigate } from "react-router-dom";
-import Microphone from "../../UI/Microphone";
+//import Microphone from "../../UI/Microphone";
 import UnAuthorizedCustomer from "../../Components/UnAuthorizedCustomer";
 
 const Product = () => {
@@ -25,7 +25,6 @@ const Product = () => {
       setProductList(data.body.results);
     });
   }, []);
-  console.log(productList);
 
   const viewProductListHandler = () => {
     getProductProjectionsDetails({ input: "" }).then((data) => {
@@ -71,10 +70,10 @@ const Product = () => {
       });
   };
 
-  const speechToTextHandler = (event) => {
-    setSearchBarInputValue(event.message);
-    searchDataHandler({ input: event.message });
-  };
+  // const speechToTextHandler = (event) => {
+  //   setSearchBarInputValue(event.message);
+  //   searchDataHandler({ input: event.message });
+  // };
 
   return (
     <React.Fragment>
@@ -111,7 +110,7 @@ const Product = () => {
                 className={`${styles.icon} ${styles.leftArrow}`}
               />
             </Button>
-            <Microphone onStop={speechToTextHandler} />
+            {/* <Microphone onStop={speechToTextHandler} /> */}
           </main>
           {error && <p style={{ color: "red" }}>{error.message}</p>}
           <Table striped bordered hover variant="dark">

@@ -16,6 +16,7 @@ declare global {
       REACT_APP_ME_AUTH_URL: string;
       REACT_APP_ME_API_URL: string;
       REACT_APP_ME_SCOPES: string;
+      REACT_APP_PAGE_SIZE: string;
     }
   }
 }

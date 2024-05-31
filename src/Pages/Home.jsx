@@ -3,6 +3,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import styles from "../CSS/MainCssFile.module.css";
 import { MDBIcon } from "mdb-react-ui-kit";
 import { apiRoot } from "../Service/client";
+import Chatbot from "../UI/ChatBot";
 
 const Home = () => {
   const authorisedUser = localStorage.getItem("authorisedUser") === "true";
@@ -213,6 +214,7 @@ const Home = () => {
               </Form>
             </main>
           </Card>
+          <Chatbot />
         </div>
       )}
     </React.Fragment>
